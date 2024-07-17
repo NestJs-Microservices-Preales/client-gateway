@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -19,7 +18,9 @@ import { catchError, firstValueFrom } from 'rxjs';
 
 @Controller('products')
 export class ProductsController {
-  constructor(@Inject(PRODUCT_SERVICE) private readonly client: ClientProxy) {}
+  constructor(
+    @Inject(PRODUCT_SERVICE) private readonly client: ClientProxy
+  ) {}
 
   @Post()
   createProduct(@Body() createProductDto: CreateProductDto) {
