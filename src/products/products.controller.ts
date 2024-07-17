@@ -12,29 +12,29 @@ import {
 } from '@nestjs/common';
 import { CreateProductDto, UpdateProductDto } from './dto';
 import { PaginationDto } from 'src/common';
-import { PRODUCT_SERVICE } from 'src/config';
+import { NATS_SERVICE } from 'src/config';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError, firstValueFrom } from 'rxjs';
 
 @Controller('products')
 export class ProductsController {
   constructor(
-    @Inject(PRODUCT_SERVICE) private readonly client: ClientProxy
+    @Inject(NATS_SERVICE) private readonly client: ClientProxy
   ) {}
 
   @Post()
   createProduct(@Body() createProductDto: CreateProductDto) {
-    return this.client.send({ cmd: 'create' }, createProductDto);
+    return this.client.send({ cmd: 'create_product' }, createProductDto);
   }
 
   @Get()
   findAllProducts(@Query() paginationDto: PaginationDto) {
-    return this.client.send({ cmd: 'find_all' }, paginationDto);
+    return this.client.send({ cmd: 'find_all_product' }, paginationDto);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return this.client.send({ cmd: 'find_one' }, { id }).pipe(
+    return this.client.send({ cmd: 'find_one_product' }, { id }).pipe(
       catchError((err) => {
         throw new RpcException(err);
       }),
@@ -43,7 +43,7 @@ export class ProductsController {
     // try {
 
     //   const product = await firstValueFrom(
-    //     this.client.send({ cmd: 'find_one' },{ id })
+    //     this.client.send({ cmd: 'find_one_product' },{ id })
     //   );
     //   return product;
 
@@ -54,7 +54,7 @@ export class ProductsController {
 
   @Delete(':id')
   deleteProduct(@Param('id') id: string) {
-    return this.client.send({ cmd: 'delete' }, { id }).pipe(
+    return this.client.send({ cmd: 'delete_product' }, { id }).pipe(
       catchError((err) => {
         throw new RpcException(err);
       }),
@@ -68,7 +68,7 @@ export class ProductsController {
   ) {
     return this.client
       .send(
-        { cmd: 'update' },
+        { cmd: 'update_product' },
         {
           id,
           ...updateProductDto,
